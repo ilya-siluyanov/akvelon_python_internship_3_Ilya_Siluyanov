@@ -26,16 +26,16 @@ paths:
           description: 'Malformed input'
         '409':
           description: 'Cannot create a user account with such data'
-  /users/{user_id}:
+  /users/{account_id}:
     parameters:
       - in: path
         name: account_id
         description: "Account's id"
         required: true
         schema:
-          type: string
+          type: integer
     get:
-      description: "Get info about particular user"
+      description: "Get info about particular account"
       responses:
         '200':
           description: "OK"
@@ -67,8 +67,17 @@ paths:
         '404':
           description: 'User not found'
 
-  /users/{user_id}/transactions:
+  /users/{account_id}/transactions:
+    parameters:
+      - in: path
+        name: account_id
+        description: "Account's id"
+        required: true
+        schema:
+          type: integer
+
     get:
+      description: "Get all user's transactions"
       parameters:
         - in: query
           name: start_date
@@ -82,7 +91,6 @@ paths:
             type: string
             format: date
           description: End date to consider for filtering
-      description: "Get all user's transactions"
       responses:
         '200':
           description: 'OK'
@@ -110,22 +118,28 @@ paths:
         '409':
           description: 'Cannot create a transaction record'
 
-  /users/{user_id}/transactions/statistics:
+  /users/{account_id}/transactions/statistics:
+    parameters:
+      - in: path
+        name: account_id
+        description: "Account's id"
+        required: true
+        schema:
+          type: integer
+      - in: query
+        name: start_date
+        schema:
+          type: string
+          format: date
+        description: Start date to consider for filtering
+      - in: query
+        name: end_date
+        schema:
+          type: string
+          format: date
+        description: End date to consider for filtering
     get:
       description: "Get all user's transactions grouped by day"
-      parameters:
-        - in: query
-          name: start_date
-          schema:
-            type: string
-            format: date
-          description: Start date to consider for filtering
-        - in: query
-          name: end_date
-          schema:
-            type: string
-            format: date
-          description: End date to consider for filtering
       responses:
         '200':
           description: 'OK'
@@ -136,8 +150,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/DayStats'
 
-  /users/{user_id}/transactions/{transaction_id}:
+  /users/{account_id}/transactions/{transaction_id}:
     parameters:
+      - in: path
+        name: account_id
+        description: "Account's id"
+        required: true
+        schema:
+          type: integer
       - in: path
         name: transaction_id
         description: 'Id of the transaction'
@@ -236,4 +256,3 @@ components:
           format: date
         sum:
           type: number
-
