@@ -1,4 +1,6 @@
 import logging
+from collections import defaultdict
+from datetime import date
 
 import pydantic
 from rest_framework import status
@@ -27,6 +29,26 @@ class TransactionStatsView(APIView):
     @staticmethod
     @check_account_exists
     def get(request: Request, user_id: int) -> Response:
+        """
+        Returns a list of transactions inside date period specified by
+        start_date and end_date query params and grouped by day with total sum of the day
+        If start_date is not specified, it is considered as start of the era
+        If end_date is not specified, it is considered as start of the next day.
+        :param request: Request object
+        :param user_id: account's id
+        :return: an object containing a field with a list of aggregated transactions (see above)
+        """
+        account = Account.objects.get(pk=user_id)
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+        parsed_trans = defaultdict(lambda: 0)
+        for transaction in get_transactions(account, start_date, end_date):
+            date_: date = transaction.date.to_python().date()
+            parsed_trans[date_.isoformat()] += transaction.amount
+        answer = []
+        for key, value in parsed_trans.items():
+            answer.append({'date': key, 'sum': value})
+        return Response(data=answer)
 
 
 class TransactionSetView(APIView):
