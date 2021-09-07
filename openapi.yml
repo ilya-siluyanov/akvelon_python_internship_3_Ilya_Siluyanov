@@ -11,7 +11,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewUserSchema'
+              $ref: '#/components/schemas/NewAccountSchema'
       responses:
         '201':
           description: 'Created'
@@ -67,13 +67,78 @@ paths:
         '404':
           description: 'User not found'
 
+  /users/{user_id}/transactions:
+    get:
+      description: "Get all user's transactions"
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TransactionSchema'
+    post:
+      description: 'Create a record about new transaction'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTransactionSchema'
+      responses:
+        '201':
+          description: 'Created'
+        '404':
+          description: 'User not found'
+        '409':
+          description: 'Cannot create a transaction record'
+
+  /users/{user_id}/transactions/{transaction_id}:
+    parameters:
+      - in: path
+        name: transaction_id
+        description: 'Id of the transaction'
+        required: true
+        schema:
+          type: string
+
+    get:
+      description: 'Get info about particular transaction'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionSchema'
+    patch:
+      description: 'Update info about particular transaction'
+      responses:
+        '200':
+          description: 'OK'
+        '400':
+          description: 'Malformed input'
+        '404':
+          description: 'No such a resource'
+
+    delete:
+      description: 'Delete particular transaction'
+      responses:
+        '200':
+          description: 'OK'
+        '404':
+          description: 'No such a resource'
 
 
 
 
 components:
   schemas:
-    NewUserSchema:
+    NewAccountSchema:
       type: object
       properties:
         first_name:
@@ -86,12 +151,40 @@ components:
         - first_name
         - second_name
         - email
+
     AccountSchema:
       type: object
       properties:
+        id:
+          type: integer
         first_name:
           type: string
         last_name:
           type: string
         email:
           type: string
+
+    NewTransactionSchema:
+      type: object
+      properties:
+        amount:
+          type: number
+        date:
+          type: string
+          format: 'date-time'
+        idempotency_key:
+          type: string
+
+    TransactionSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        amount:
+          type: number
+        date:
+          type: string
+          format: 'date-time'
+
