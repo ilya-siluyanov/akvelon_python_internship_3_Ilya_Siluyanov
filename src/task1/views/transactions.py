@@ -11,18 +11,7 @@ from rest_framework.views import APIView
 from ..models import Account, Transaction
 from ..serializers import NewTransaction, TransactionSerializer
 from ..services.transactions import get_transactions
-
-
-def check_account_exists(func):
-    def wrapper(*args, **kwargs):
-        user_id = kwargs['user_id']
-        try:
-            Account.objects.get(pk=user_id)
-        except Account.DoesNotExist as e:
-            return Response(data={}, status=status.HTTP_404_NOT_FOUND)
-        return func(*args, **kwargs)
-
-    return wrapper
+from ..utils import check_account_exists, check_transaction_exists
 
 
 class TransactionStatsView(APIView):
@@ -91,20 +80,6 @@ class TransactionSetView(APIView):
         new_transaction = Transaction(**request.data)
         new_transaction.save()
         return Response(data={}, status=status.HTTP_201_CREATED)
-
-
-def check_transaction_exists(func):
-    def wrapper(*args, **kwargs):
-        user_id = kwargs['user_id']
-        transaction_id = kwargs['transaction_id']
-        try:
-            user = Account.objects.get(pk=user_id)
-            transaction = user.transactions.get(pk=transaction_id)
-        except (Account.DoesNotExist, Transaction.DoesNotExist) as e:
-            return Response(data={}, status=status.HTTP_404_NOT_FOUND)
-        return func(*args, **kwargs)
-
-    return wrapper
 
 
 class TransactionView(APIView):

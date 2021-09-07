@@ -7,6 +7,12 @@ from ..models import Account, Transaction
 def get_transactions(account: Account,
                      start_date: str = None,
                      end_date: str = None) -> List[Transaction]:
+    """
+    :param account: An account
+    :param start_date: a date (without time) - the start of the period
+    :param end_date: a date (without time) - the end of the period (including the date)
+    :return: a list of transactions inside the specified period
+    """
     if start_date is None:
         start_date = dt.fromtimestamp(0)
     if end_date is None:
