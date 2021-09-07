@@ -26,6 +26,47 @@ paths:
           description: 'Malformed input'
         '409':
           description: 'Cannot create a user account with such data'
+  /users/{user_id}:
+    parameters:
+      - in: path
+        name: author_id
+        description: "User's id"
+        required: true
+        schema:
+          type: string
+    get:
+      description: "Get info about particular user"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountSchema'
+        '404':
+          description: 'User not found'
+    patch:
+      description: "Update info about particular user"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountSchema'
+      responses:
+        '200':
+          description: 'OK'
+        '400':
+          description: 'Malformed input'
+        '404':
+          description: 'User not found'
+    delete:
+      description: 'Delete a user with specified id'
+      responses:
+        '200':
+          description: 'OK'
+        '404':
+          description: 'User not found'
+
 
 
 
@@ -45,3 +86,12 @@ components:
         - first_name
         - second_name
         - email
+    AccountSchema:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string

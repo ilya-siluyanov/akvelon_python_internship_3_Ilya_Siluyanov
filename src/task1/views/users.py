@@ -57,3 +57,20 @@ class UserView(APIView):
             'last_name': account.last_name,
             'email': account.email,
         })
+
+    @staticmethod
+    def patch(request: Request, user_id: int) -> Response:
+        """
+        Updates info about the particular user
+        :param request: Request object
+        :param user_id: User's id
+        :return: 200, 400 or 404
+        """
+        request_body = request.data
+        try:
+            account = Account.objects.get(pk=user_id)
+        except Account.DoesNotExist as e:
+            return Response(data={}, status=status.HTTP_404_NOT_FOUND)
+
+        # TODO: to write a validator for input
+        return Response(data={}, status=status.HTTP_200_OK)
