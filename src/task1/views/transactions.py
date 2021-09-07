@@ -49,7 +49,7 @@ class TransactionSetView(APIView):
         Returns a list of transactions inside date period specified by
         start_date and end_date query params
         If start_date is not specified, it is considered as start of the era
-        If end_date is not specified, it is considered as start of the next day.
+        If end_date is not specified, it is considered as start of the day after start_date
         :param request: Request object
         :param user_id: account's id
         :return: an object containing a field with a list of transactions

@@ -14,9 +14,9 @@ def get_transactions(account: Account,
     :return: a list of transactions inside the specified period
     """
     if start_date is None:
-        start_date = dt.fromtimestamp(0)
+        start_date = dt.fromtimestamp(0).isoformat()
     if end_date is None:
-        end_date = dt.now()
+        end_date = start_date
     start_date: dt = dt.fromisoformat(start_date)
     end_date: dt = dt.fromisoformat(end_date) + timedelta(days=1)
     return account.transactions.all().filter(date__lt=end_date).filter(start_date__gte=start_date)
