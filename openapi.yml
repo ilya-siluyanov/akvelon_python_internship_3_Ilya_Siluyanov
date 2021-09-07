@@ -137,6 +137,7 @@ paths:
 
 
 components:
+
   schemas:
     NewAccountSchema:
       type: object

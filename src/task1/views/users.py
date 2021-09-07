@@ -74,3 +74,12 @@ class UserView(APIView):
 
         # TODO: to write a validator for input
         return Response(data={}, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def delete(request: Request, user_id: int) -> Response:
+        try:
+            account = Account.objects.filter(pk=user_id)
+        except Account.DoesNotExists as e:
+            return Response(data={}, status=status.HTTP_404_NOT_FOUND)
+        account.delete()
+        return Response(data={}, status=status.HTTP_200_OK)
