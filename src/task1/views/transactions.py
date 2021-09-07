@@ -8,9 +8,10 @@ from rest_framework.views import APIView
 
 from ..models import Account, Transaction
 from ..serializers import NewTransaction, TransactionSerializer
+from ..services.transactions import get_transactions
 
 
-def check_user_exists(func):
+def check_account_exists(func):
     def wrapper(*args, **kwargs):
         user_id = kwargs['user_id']
         try:
@@ -22,19 +23,35 @@ def check_user_exists(func):
     return wrapper
 
 
+class TransactionStatsView(APIView):
+    @staticmethod
+    @check_account_exists
+    def get(request: Request, user_id: int) -> Response:
+
+
 class TransactionSetView(APIView):
 
     @staticmethod
-    @check_user_exists
+    @check_account_exists
     def get(request: Request, user_id: int) -> Response:
-        user = Account.objects.get(pk=user_id)
-        transactions = user.transactions.all()
+        """
+        Returns a list of transactions inside date period specified by
+        start_date and end_date query params
+        If start_date is not specified, it is considered as start of the era
+        If end_date is not specified, it is considered as start of the next day.
+        :param request: Request object
+        :param user_id: account's id
+        :return: an object containing a field with a list of transactions
+        """
+        account = Account.objects.get(pk=user_id)
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
         return Response(data={
-            'transactions': transactions
+            'transactions': get_transactions(account, start_date, end_date)
         })
 
     @staticmethod
-    @check_user_exists
+    @check_account_exists
     def post(request: Request, user_id: int) -> Response:
         user = Account.objects.get(pk=user_id)
         try:

@@ -69,6 +69,19 @@ paths:
 
   /users/{user_id}/transactions:
     get:
+      parameters:
+        - in: query
+          name: start_date
+          schema:
+            type: string
+            format: date
+          description: Start date to consider for filtering
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date
+          description: End date to consider for filtering
       description: "Get all user's transactions"
       responses:
         '200':
@@ -96,6 +109,32 @@ paths:
           description: 'User not found'
         '409':
           description: 'Cannot create a transaction record'
+
+  /users/{user_id}/transactions/statistics:
+    get:
+      description: "Get all user's transactions grouped by day"
+      parameters:
+        - in: query
+          name: start_date
+          schema:
+            type: string
+            format: date
+          description: Start date to consider for filtering
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date
+          description: End date to consider for filtering
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DayStats'
 
   /users/{user_id}/transactions/{transaction_id}:
     parameters:
@@ -188,4 +227,13 @@ components:
         date:
           type: string
           format: 'date-time'
+
+    DayStats:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        sum:
+          type: number
 
