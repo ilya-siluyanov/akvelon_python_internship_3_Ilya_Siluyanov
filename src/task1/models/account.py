@@ -3,7 +3,7 @@ from django.db.models import fields
 
 
 class Account(models.Model):
-    id = fields.AutoField(pk=True)
+    id = fields.AutoField(primary_key=True)
     first_name = fields.CharField(max_length=50)
     last_name = fields.CharField(max_length=50)
     email = fields.EmailField(max_length=50)
