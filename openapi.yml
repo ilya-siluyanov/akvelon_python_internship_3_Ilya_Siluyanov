@@ -29,8 +29,8 @@ paths:
   /users/{user_id}:
     parameters:
       - in: path
-        name: author_id
-        description: "User's id"
+        name: account_id
+        description: "Account's id"
         required: true
         schema:
           type: string
