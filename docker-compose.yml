@@ -3,21 +3,21 @@ version: "3.8"
 services:
   server:
     build: ./
+    env_file:
+      - .env
     ports:
       - '8000:8000'
     depends_on:
       - postgres
 
-  postgres:
+  postgres: # $POSTGRES_HOST must be equal to the service name
     image: postgres:latest
+    env_file:
+      - .env
     volumes:
       - postgres_volume
-    environment:
-      - POSTGRES_DB=akvelon-db
-      - POSTGRES_USER=dkr-user
-      - POSTGRES_PASSWORD=dkr-pass
-    ports:
-      - '5432:5432'
+    ports: # $POSTGRES_PORT must be equal to the specified port
+      - '5432'
 
 volumes:
   postgres_volume: { }
