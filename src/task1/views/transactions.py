@@ -8,13 +8,20 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ..logs import StringFormatter
 from ..models import Account, Transaction
 from ..serializers import NewTransaction, TransactionSerializer
 from ..services.transactions import get_transactions
 from ..utils import check_account_exists, check_transaction_exists
 
+logger = logging.getLogger(__name__)
+h = logging.StreamHandler()
+h.setFormatter(StringFormatter())
+logger.addHandler(h)
+
 
 class TransactionStatsView(APIView):
+
     @staticmethod
     @check_account_exists
     def get(request: Request, user_id: int) -> Response:
@@ -32,7 +39,7 @@ class TransactionStatsView(APIView):
         end_date = request.query_params.get('end_date')
         parsed_trans = defaultdict(lambda: 0)
         for transaction in get_transactions(account, start_date, end_date):
-            date_: date = transaction.date.to_python().date()
+            date_: date = transaction.date.date()
             parsed_trans[date_.isoformat()] += transaction.amount
         answer = []
         for key, value in parsed_trans.items():
@@ -57,26 +64,34 @@ class TransactionSetView(APIView):
         account = Account.objects.get(pk=user_id)
         start_date = request.query_params.get('start_date')
         end_date = request.query_params.get('end_date')
-        return Response(data={
-            'transactions': get_transactions(account, start_date, end_date)
-        })
+
+        transactions = get_transactions(account, start_date, end_date)
+        for i, tr in enumerate(transactions):
+            transactions[i] = {
+                'id': tr.id,
+                'amount': tr.amount,
+                'date': tr.date,
+                'user_id': tr.user.id,
+            }
+        return Response(data={'transactions': transactions})
 
     @staticmethod
     @check_account_exists
     def post(request: Request, user_id: int) -> Response:
         user = Account.objects.get(pk=user_id)
         try:
-            new_transaction = NewTransaction(request.data)
-            transaction = user.transactions.filter(idempotency_key=new_transaction.idempotency_key)
-            if transaction is not None:
+            new_transaction = NewTransaction(**request.data)
+            transactions = user.transactions.filter(idempotency_key=new_transaction.idempotency_key)
+            if len(transactions) > 0:
                 raise ValueError('Try to duplicate transactions with key %s', new_transaction.idempotency_key)
         except pydantic.ValidationError as e:
-            logging.warning(e.json())
+            logger.warning(e.json())
             return Response(data={}, status=status.HTTP_400_BAD_REQUEST)
         except ValueError as e:
+            logger.warning(e)
             return Response(data={}, status=status.HTTP_409_CONFLICT)
 
-        request.data['user_id'] = user_id
+        request.data['user'] = Account.objects.get(pk=user_id)
         new_transaction = Transaction(**request.data)
         new_transaction.save()
         return Response(data={}, status=status.HTTP_201_CREATED)

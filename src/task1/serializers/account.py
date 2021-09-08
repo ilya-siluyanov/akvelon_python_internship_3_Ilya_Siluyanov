@@ -11,6 +11,6 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class NewAccount(pydantic.BaseModel):
-    first_name = str,
-    last_name = str,
-    email = str,
+    first_name: str
+    last_name: str
+    email: str

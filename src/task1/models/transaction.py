@@ -1,10 +1,12 @@
 from django.db import models
 from django.db.models import fields
 
+from .account import Account
+
 
 class Transaction(models.Model):
     id = fields.AutoField(primary_key=True)
-    user_id = models.ForeignKey(to='Account', on_delete=models.CASCADE, related_name='transactions')
+    user = models.ForeignKey(to=Account, on_delete=models.CASCADE, related_name='transactions')
     amount = models.DecimalField(decimal_places=10, max_digits=100)  # FIXME
     date = models.DateTimeField()
     idempotency_key = models.CharField(max_length=100)

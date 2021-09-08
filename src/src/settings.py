@@ -74,8 +74,12 @@ WSGI_APPLICATION = 'src.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'akvelon-db',
+        'USER': 'dkr-user',
+        'PASSWORD': 'dkr-pass',
+        'HOST': 'postgres',
+        'PORT': '5432',
     }
 }
 
@@ -114,7 +118,7 @@ LOGGING = {
         }
     },
     'loggers': {
-        'task1': {
+        'root': {
             'handlers': ['console']
         }
     }

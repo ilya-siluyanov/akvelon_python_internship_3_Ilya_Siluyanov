@@ -1,3 +1,4 @@
+import json
 import logging
 
 import pydantic
@@ -22,7 +23,7 @@ class UserView(APIView):
                 raise ValueError(request_body['email'])
         except pydantic.ValidationError as e:
             logging.warning('Malformed input data: %s', e)
-            return Response(data=e.json(), status=status.HTTP_400_BAD_REQUEST)
+            return Response(data=json.loads(e.json()), status=status.HTTP_400_BAD_REQUEST)
         except ValueError as e:
             logging.warning('Try to save a new user with existing data: %s', e)
             return Response(data={}, status=status.HTTP_409_CONFLICT)

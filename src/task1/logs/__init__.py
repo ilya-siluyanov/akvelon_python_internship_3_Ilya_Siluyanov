@@ -52,4 +52,4 @@ class StringFormatter(logging.Formatter):
             message = self.formatException(record.exc_info)
         else:
             message = record.getMessage()
-        return f'{record.pathname}:{record.lineno} {dt.utcnow().isoformat()}:[{record.name}:{record.levelname}] {message}'
+        return f'{record.name}:{record.pathname}:{record.lineno} {dt.utcnow().isoformat()}:[{record.name}:{record.levelname}] {message}'
