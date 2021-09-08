@@ -91,6 +91,20 @@ paths:
             type: string
             format: date
           description: End date to consider for filtering
+        - in: query
+          name: filter
+          schema:
+            type: string
+            enum:
+              - income
+              - outcome
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            enum:
+              - date
+              - amount
       responses:
         '200':
           description: 'OK'
