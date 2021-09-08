@@ -7,5 +7,9 @@ RUN pip install -r requirements.txt
 COPY ./ ./
 
 EXPOSE 8000
-CMD python src/manage.py runserver 0.0.0.0:8000
+
+CMD python src/manage.py makemigrations && \
+    python src/manage.py migrate && \
+    cd src && \
+    gunicorn src.wsgi -b 0.0.0.0:8000
 
