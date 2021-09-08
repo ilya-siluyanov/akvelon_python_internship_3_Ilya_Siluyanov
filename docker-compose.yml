@@ -1,0 +1,20 @@
+version: 3.0.0
+
+services:
+  server:
+    build: ./
+    ports:
+      - 8000:8000
+
+  postgres:
+    image: postgres:latest
+    volumes:
+      - postgres_volume
+    environment:
+      - POSTGRES_USER=dkr-user
+      - POSTGRES_PASSWORD=dkr-pass
+    ports:
+      - 5432:5432
+
+volumes:
+  postgres_volume: { }
