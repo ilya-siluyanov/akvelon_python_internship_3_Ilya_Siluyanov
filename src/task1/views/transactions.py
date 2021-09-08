@@ -64,8 +64,9 @@ class TransactionSetView(APIView):
         account = Account.objects.get(pk=user_id)
         start_date = request.query_params.get('start_date')
         end_date = request.query_params.get('end_date')
-
-        transactions = get_transactions(account, start_date, end_date)
+        filter_field = request.query_params.get('filter')
+        sort_by_field = request.query_params.get('sort_by')
+        transactions = get_transactions(account, start_date, end_date, filter_field, sort_by_field)
         for i, tr in enumerate(transactions):
             transactions[i] = {
                 'id': tr.id,
