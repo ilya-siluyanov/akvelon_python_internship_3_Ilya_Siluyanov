@@ -95,7 +95,7 @@ class TransactionSetView(APIView):
         request.data['user'] = Account.objects.get(pk=user_id)
         new_transaction = Transaction(**request.data)
         new_transaction.save()
-        return Response(data={}, status=status.HTTP_201_CREATED)
+        return Response(data={'id': new_transaction.pk}, status=status.HTTP_201_CREATED)
 
 
 class TransactionView(APIView):

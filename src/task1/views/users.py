@@ -13,7 +13,7 @@ from ..serializers import NewAccount, AccountSerializer
 
 class UserView(APIView):
     @staticmethod
-    def put(request: Request) -> Response:
+    def post(request: Request) -> Response:
         """creates a new account if there is no record with specified email"""
         request_body = request.data
         try:

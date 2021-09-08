@@ -6,7 +6,7 @@ services:
     env_file:
       - .env
     ports:
-      - '8000:8000'
+      - '8000:8000' # check $SERVER_PORT for equality with specified ports
     depends_on:
       - postgres
 

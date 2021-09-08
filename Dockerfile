@@ -10,6 +10,5 @@ EXPOSE 8000
 
 CMD python src/manage.py makemigrations && \
     python src/manage.py migrate && \
-    cd src && \
-    DEBUG=False gunicorn src.wsgi -b 0.0.0.0:${SERVER_PORT:-8000}
+    DEBUG=False python src/manage.py runserver 0.0.0.0:${SERVER_PORT:-8000}
 
