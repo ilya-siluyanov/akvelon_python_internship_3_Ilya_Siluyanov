@@ -1,5 +1,5 @@
 # Personal finance management system
-A RESTful service that allows to store info about users, their transactions and perform operations under these transactions.
+A RESTful service that allows to store info about users (also to create, update, delete it), their transactions and perform operations under these transactions (create new ones, update info about particular transaction).
 ## How to launch?
 1. Clone the repository
 2. In the root directory it is enough to use docker-compose:
